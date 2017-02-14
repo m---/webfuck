@@ -2,6 +2,12 @@
     'use strict';
     
     var $ = function (id) { return document.getElementById(id); };
+
+    var wait = function (ms) {
+        return new Promise(function (r) {
+            setTimeout(r, ms);
+        });
+    };
     
     var head = function (url, callback) {
         var xhr = new XMLHttpRequest();
@@ -56,40 +62,52 @@
         }
         
         new Promise(function (resolve, reject) {
-            $('webfuck-action-check').innerText = 'loading...';
+            $('webfuck-action-check').innerHTML = `loading...
+                (<span id="webfuck-progress-current">0</span>/<span id="webfuck-progress-all">0</span>)`;
             setTimeout(resolve, 10);
-        }).then(function () {
+        }).then(async function () {
             var result = [];
             var target = [TARGET_URL.origin + '/'];
-
+            var filename = TARGET_URL.pathname.replace(/.*\//, '');
             var dirname = TARGET_URL.pathname.match(/.*\//)[0];
+
             if (dirname !== '/') {
                 target.push(TARGET_URL.origin + dirname);
             }
-    
-            WEBFUCK_CHECK_LIST.forEach(function (value) {
-                target.forEach(function (t) {
-                    t = t + value;
-                    //console.log(t);
-                    head(t, function (s) {
-                        if (s !== 404) {
-                            result.push(t);
-                        }
-                    });
-                });
-            });
-    
-            var filename = TARGET_URL.pathname.replace(/.*\//, '');
+
+            // init progress
+            var progressCurrent = 0;
+            var progressAll = WEBFUCK_CHECK_LIST.length * target.length;
             if (filename !== '') {
-                WEBFUCK_CHECK_LIST_EXT.forEach(function (value) {
-                    var t = TARGET_URL.origin + dirname + value.replace('{filename}', filename);
-                    //console.log(t);
+                progressAll += WEBFUCK_CHECK_LIST_EXT.length;
+            }
+            $('webfuck-progress-all').innerText = String(progressAll);
+    
+            // lets f*ck
+            for (var value of WEBFUCK_CHECK_LIST) {
+                for (var t of target) {
+                    t = t + value;
                     head(t, function (s) {
                         if (s !== 404) {
                             result.push(t);
                         }
                     });
-                });
+                    $('webfuck-progress-current').innerText = String(++progressCurrent);
+                    await wait(WEBFUCK_CHECK_WAIT);
+                }
+            }
+    
+            if (filename !== '') {
+                for (var value of WEBFUCK_CHECK_LIST_EXT) { 
+                    var t = TARGET_URL.origin + dirname + value.replace('{filename}', filename);
+                    head(t, function (s) {
+                        if (s !== 404) {
+                            result.push(t);
+                        }
+                    });
+                    $('webfuck-progress-current').innerText = String(++progressCurrent);
+                    await wait(WEBFUCK_CHECK_WAIT);
+                }
             }
     
             localStorage[TARGET_URL] = JSON.stringify(result);

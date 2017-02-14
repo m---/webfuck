@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var WEBFUCK_CHECK_LIST = [
     'robots.txt',
@@ -31,3 +31,5 @@ var WEBFUCK_CHECK_LIST_EXT = [
     '.{filename}.bak',
     '{filename}c'
 ];
+
+var WEBFUCK_CHECK_WAIT = 1000;
