@@ -17,7 +17,7 @@ Let's read :)
 >
 > ...
 >
-> ERequiring players to guess file or directory names (or dos your server with dirbuster)
+> ãƒ»Requiring players to guess file or directory names (or dos your server with dirbuster)
 
 [suggestions-for-running-a-ctf](https://github.com/pwning/docs/blob/master/suggestions-for-running-a-ctf.markdown#web-challenges)
 
