@@ -8,7 +8,7 @@
             setTimeout(r, ms);
         });
     };
-    
+
     var head = function (url, callback) {
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -23,7 +23,7 @@
         };
         xhr.send();
     };
-    
+
     var assign = function (result) {
         //console.log(result);
         $('webfuck-result').innerHTML = '';
@@ -43,9 +43,9 @@
             $('webfuck-result').appendChild(text);
         }
     };
-    
+
     var TARGET_URL = null;
-    
+
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         TARGET_URL = new URL(tabs[0].url);
     
@@ -54,7 +54,7 @@
             assign(JSON.parse(localStorage[TARGET_URL]));
         }
     });
-    
+
     $('webfuck-action-check').addEventListener('click', function () {
         if (TARGET_URL === null || TARGET_URL.origin.match(/^http/) === null) {
             console.error('WTF~~');
@@ -62,6 +62,7 @@
         }
         
         new Promise(function (resolve, reject) {
+            $('webfuck-action-check').style.pointerEvents = 'none';
             $('webfuck-action-check').innerHTML = `loading...
                 (<span id="webfuck-progress-current">0</span>/<span id="webfuck-progress-all">0</span>)`;
             setTimeout(resolve, 10);
@@ -113,6 +114,7 @@
             localStorage[TARGET_URL] = JSON.stringify(result);
             assign(result);
     
+            $('webfuck-action-check').style.pointerEvents = 'auto';
             $('webfuck-action-check').innerText = 'check';
         });
     });

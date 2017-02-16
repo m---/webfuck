@@ -15,6 +15,10 @@ var WEBFUCK_CHECK_LIST = [
     'backup.tar.gz',
     'backup.bz2',
     'backup.tar.bz2',
+    'dump.sql',
+    'dump.gz',
+    'dump.sql.gz',
+    'dump.zip',
     '.svn/',
     '.git/',
     '.hg/',
@@ -29,6 +33,8 @@ var WEBFUCK_CHECK_LIST_EXT = [
     '.{filename}~',
     '{filename}.bak',
     '.{filename}.bak',
+    '{filename}.old',
+    '.{filename}.old',
     '{filename}c'
 ];
 
